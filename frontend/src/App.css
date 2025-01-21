@@ -1,0 +1,9 @@
+.userTable {
+  @apply w-full text-center;
+}
+.userTable th {
+  @apply font-medium border text-base;
+}
+.userTable td {
+  @apply border text-base;
+}
