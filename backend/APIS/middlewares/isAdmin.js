@@ -9,6 +9,7 @@ const isAdmin = (req, res, next)=>{
         // verify the token
         const decoded = jwt.verify(token, process.env.SECRET_KEY)
          // Check if the user role is ADMIN
+        //  console.log(decoded)
          if (decoded.role !== 'ADMIN') {
             return res.send({ message: 'Access denied. Only admins can perform this action' });
         }

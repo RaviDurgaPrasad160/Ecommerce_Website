@@ -8,15 +8,27 @@ const ChangeUserRole = ({name, email, role, userId, onClose, fetchUsers }) => {
   // const [userRole, setUserRole] = useState(role)
 
   const onSubmit = async(data) => {
-    console.log(data.role)
     try{
       const token = localStorage.getItem('token')
-      await axios.put(`http://localhost:8000/user-api/change-role/${userId}`, {role: data.role}, {headers:{Authorization:`Bearer ${token}`}})
-      fetchUsers()
-      onClose()
+      const response = await axios.put(
+        `http://localhost:8000/user-api/change-role/${userId}`,
+        { role: data.role },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
 
+      
+      if(response.data.message === "User role updated successfully") {
+        fetchUsers() // Refresh the users list
+        onClose() // Close the modal
+      } else {
+        console.error(response.data.message)
+      }
     } catch(err){
-      console.log(err.message)
+      console.error("Error changing user role:", err.message)
     }
   }
   

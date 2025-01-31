@@ -2,6 +2,7 @@ let jwt = require('jsonwebtoken')
 require('dotenv').config()
 const verifyToken = (req, res, next) => {
     let token = req.headers.authorization?.split(' ')[1]; // Extract token
+    // console.log(token)
     if (!token) return res.send({ message: "Token missing" });
     try {
         let decoded = jwt.verify(token, process.env.SECRET_KEY);

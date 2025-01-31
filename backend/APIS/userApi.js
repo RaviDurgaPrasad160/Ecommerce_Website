@@ -29,7 +29,14 @@ userApp.post('/loginuser', expressAsyncHandler(async(req,res)=>{
         // if psssword match
         else {
             // create token
-            const token = jwt.sign({message:userofDB.email}, process.env.SECRET_KEY, {expiresIn: '7d'})
+            const token = jwt.sign(
+                {
+                    email: userofDB.email,
+                    role: userofDB.role
+                }, 
+                process.env.SECRET_KEY, 
+                {expiresIn: '7d'}
+            )
             res.send({message:"success", payload:token, userObj:userofDB})
         }
     }
@@ -66,31 +73,26 @@ userApp.get('/get-users', verifyToken, expressAsyncHandler(async (req, res) => {
     const users = await userCollectionObj.find().toArray();
     res.send({ message: "Users fetched successfully", users });
 }));
-// route to handle change-role 
-userApp.put('/change-role/:userId', verifyToken, isAdmin, expressAsyncHandler(async (req, res) => {
-    const userCollectionObj = req.app.get('userCollectionObj');
-    const { role } = req.body; // Extract the role from the request body
-    const userId = req.params.userId; // Extract the userId from params
-    // Validate userId
-    if (!ObjectId.isValid(userId)) {
-        return res.status(400).send({ message: 'Invalid userId format' });
-    }
+// route to change user role
+userApp.put('/change-role/:userId', verifyToken, isAdmin, expressAsyncHandler(async(req,res)=>{
+    const userCollectionObj = req.app.get('userCollectionObj')
+    const {userId} = req.params
+    const {role} = req.body
+    
     try {
-        // Update the user's role in the database
         const result = await userCollectionObj.updateOne(
-            { _id: new ObjectId(userId) }, // Find user by ObjectId
-            { $set: { role } } // Set the new role
-        );
-        // Check if the update was successful
-        if (result.modifiedCount > 0) {
-            res.send({ message: 'success' });
+            { _id: new ObjectId(userId) },
+            { $set: { role: role } }
+        )
+        
+        if(result.modifiedCount === 1) {
+            res.send({message: "User role updated successfully"})
         } else {
-            res.status(404).send({ message: 'User not found or role not updated' });
+            res.send({message: "User not found or role unchanged"})
         }
-    } catch (error) {
-        // Handle errors
-        console.error("Error updating role:", error);
-        res.status(500).send({ message: 'Internal server error' });
+    } catch(err) {
+        res.status(500).send({message: "Error updating user role", error: err.message})
     }
-}));
+}))
+
 module.exports = userApp
