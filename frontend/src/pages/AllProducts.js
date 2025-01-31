@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import UploadProduct from '../components/UploadProduct'
 import axios from 'axios'
+import AdminProductCart from '../components/AdminProductCart'
 
 
 const AllProducts = () => {
@@ -30,22 +31,21 @@ const AllProducts = () => {
             </div>
           </div>
       </div>
+
+    {/* AdminProductCart to display all products */}
+    <div className='flex items-center gap-4'>
+      {
+        allProducts.map((product, index)=>{
+          return(
+            <AdminProductCart data={product} fetchData={fetchAllProducts} key={index}/>
+          )
+        })
+      }
+    </div>
+    
       
-      <div className='flex items-center gap-4 py-3'>
-        {
-          allProducts.map((product, index)=>{
-            return(
-              <div className='bg-white p-4 rounded'>
-                  <div>
-                    <img src={product.productImage[0]} width={100} height={100}/>
-                  </div>
-                  <h3>{product.productName}</h3>
-              </div>
-              
-            )
-          })
-        }
-      </div>
+
+    {/* UploadProduct to upload new product */}
       {
         openUploadProduct && (
           <UploadProduct onClose={()=>{setOpenUploadProduct(false)}}/>
