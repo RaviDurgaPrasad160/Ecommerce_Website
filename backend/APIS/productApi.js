@@ -34,6 +34,30 @@ productApp.get('/get-products',expressAsyncHandler(async(req,res)=>{
     res.send({message:'products fetched successfully', products})
 }))
 
+// route to get distinct categories names
+productApp.get('/get-categories', expressAsyncHandler(async(req, res) => {
+    const productCollectionObj = req.app.get('productCollectionObj')
+    
+    // Get distinct categories from products collection
+    const categories = await productCollectionObj.distinct('category')
+
+    const productByCategory = []
+
+    // to find product in each category
+    for(const category of categories){
+        const product = await productCollectionObj.findOne({category})
+        
+        if(product){
+            productByCategory.push(product)
+        }
+        else{
+            res.status(404).send({ message: `No products found in ${category} category` })
+        }
+    }
+    
+    res.send({message:'Categories fetched successfully', productByCategory})
+}))
+
 // route to update product
 productApp.put('/update-product/:productId', verifyToken, isAdmin, expressAsyncHandler(async(req,res)=>{
     const productCollectionObj = req.app.get('productCollectionObj')
@@ -55,4 +79,25 @@ productApp.put('/update-product/:productId', verifyToken, isAdmin, expressAsyncH
     }
 }))
 
+// route to get all products from each category
+productApp.get('/get-products-by-category/:category', expressAsyncHandler(async(req,res)=>{
+    const productCollectionObj = req.app.get('productCollectionObj')
+    const {category} = req.params
+    const products = await productCollectionObj.find({category:category}).toArray()
+    res.send({message:'Products fetched successfully',products})
+    
+}))
+
+// route to get product by id
+productApp.get('/product-by-id/:productId', expressAsyncHandler(async(req,res)=>{
+    const productCollectionObj = req.app.get('productCollectionObj')
+    const {productId} = req.params
+    const product = await productCollectionObj.findOne({_id:new ObjectId(productId)})
+    if(product){
+        res.send({message:'product fetched successfully',product})
+    }
+    else{
+        res.send({message:'Product not found'})
+    }
+}))
 module.exports = productApp

@@ -10,7 +10,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
   
 
-const UploadProduct = ({onClose}) => {
+const UploadProduct = ({onClose, fetchData}) => {
     const {
         register,
         handleSubmit,
@@ -50,6 +50,7 @@ const UploadProduct = ({onClose}) => {
             })
             if(response.data.message === 'new product created'){
                 toast.success("Product uploaded successfully!")
+                fetchData()
                 onClose()
             }
             else{
@@ -66,7 +67,7 @@ const UploadProduct = ({onClose}) => {
   return (
     <div>
       <div>
-        <div className='fixed z-10 top-0 left-0 bottom-0 right-0 w-full h-full flex justify-center items-center bg-slate-200 bg-opacity-50'>
+        <div className='fixed z-10 top-0 left-0 bottom-0 right-0 w-full h-full flex justify-center items-center bg-slate-200 bg-opacity-50' onClick={onClose}>
             <div className='w-full max-w-2xl bg-white p-4 h-full max-h-[80%] overflow-hidden overflow-y-scroll overflow-x-hidden'>
                 <div className='flex justify-between items-center'>
                     <h2 className='text-xl font-semibold'>UploadProduct</h2>
@@ -75,7 +76,7 @@ const UploadProduct = ({onClose}) => {
                     </div>
                 </div>
                 <div>
-                    <form className='mt-4' onSubmit={handleSubmit(onSubmit)} >
+                    <form className='mt-4' onSubmit={handleSubmit(onSubmit)} onClick={(e)=> e.stopPropagation()}>
                         <div className='mb-4'>
                             <label htmlFor="productName" className='block mb-1'>Product Name: </label>
                             <input type="text" id='productName' placeholder='enter product name' {...register("productName", { required: true })} className='w-full p-1 border bg-slate-100 rounded'/>

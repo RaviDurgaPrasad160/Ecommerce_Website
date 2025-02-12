@@ -7,6 +7,8 @@ import SignUp from '../pages/SignUp'
 import AdminPanel from '../pages/AdminPanel'
 import AllUsers from './../pages/AllUsers';
 import AllProducts from './../pages/AllProducts';
+import CategoreProduct from '../pages/CategoreProduct'
+import ProductDetailes from '../pages/ProductDetailes'
 
 const router = createBrowserRouter([
     {
@@ -30,6 +32,14 @@ const router = createBrowserRouter([
                 element:<SignUp/>
             },
             {
+                path:'product-category/:categoryName',
+                element:<CategoreProduct/>
+            },
+            {
+                path:'product/:productId',
+                element:<ProductDetailes/>
+            },
+            {
                 path:'admin-panel',
                 element:<AdminPanel/>,
                 children:[
@@ -45,6 +55,10 @@ const router = createBrowserRouter([
             }
         ]
     }
-])
+], {
+    future: {
+        v7_startTransition: true
+    }
+})
 
 export default router

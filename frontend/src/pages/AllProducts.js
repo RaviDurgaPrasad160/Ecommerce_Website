@@ -33,7 +33,7 @@ const AllProducts = () => {
       </div>
 
     {/* AdminProductCart to display all products */}
-    <div className='flex items-center gap-4'>
+    <div className='flex items-center gap-4 flex-wrap py-3 h-[calc(100vh-190px)] overflow-y-scroll'>
       {
         allProducts.map((product, index)=>{
           return(
@@ -48,7 +48,7 @@ const AllProducts = () => {
     {/* UploadProduct to upload new product */}
       {
         openUploadProduct && (
-          <UploadProduct onClose={()=>{setOpenUploadProduct(false)}}/>
+          <UploadProduct onClose={()=>{setOpenUploadProduct(false) }} fetchData={fetchAllProducts}/>
         )
       }
     </div>
